@@ -102,5 +102,36 @@ class CombiningRhythms(Scene):
         self.wait(1)
 
         self.next_section("Another example of a sequence combination")
+        self.wait()
+
+
+class GraphCreation(Scene):
+    def construct(self):
+        k = 4  # number of adjacencies
+        theta = 2*PI/(2*k)  # distribute adjacencies evenly
         
+        # draw equidistant points along a circle
+        circle = Circle(radius=3)
+        angles = [i*theta for i in range(2*k)]
+        points = [circle.point_at_angle(a) for a in angles]
+        dots = [Dot(point=p).scale(2) for p in points]
+
+        # place labels along an "outer" circle
+        label_circle = Circle(radius=3.75)
+        label_points  = [label_circle.point_at_angle(a) for a in angles]
+        label_dots = [Dot(point=p) for p in label_points]
         
+        label_text = sum([[f"{i+1}t", f"{i+1}h"] for i in range(k)], [])
+
+        # grouped labels with dots
+        dots_and_lpoints = VGroup(*dots, *label_dots)
+
+        # animation
+        self.play(Create(circle))
+        self.wait(1)
+        self.play(FadeIn(dots_and_lpoints), FadeOut(*label_dots))
+        self.play(dots_and_lpoints.animate.flip())
+        self.play(dots_and_lpoints.animate.rotate_about_origin(-PI/(2*k)))
+        # create labels after transformation to stop them from mirroring and rotating
+        labels = [Text(t).move_to(p) for t,p in zip(label_text,label_dots)]
+        self.play(FadeIn(*labels))
