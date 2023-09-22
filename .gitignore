@@ -161,3 +161,4 @@ cython_debug/
 
 # Manim outputs
 media/
+*.mp4
